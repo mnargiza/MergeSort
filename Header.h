@@ -10,7 +10,7 @@
 
 using namespace std;
 
-const int amountOfTthreads = 4;
+const int amountOfTthreads = 2;
 
 void Sort(double arr[], int n, double* tmp);
 void Merge(double arr1[], int n1, double arr2[], int n2, double* arr3, int j);
