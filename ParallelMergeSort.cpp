@@ -1,6 +1,6 @@
 #include "Header.h"
 
-const int amountOfTthreads = 4;
+
 
 
 void ParallelSort(double arr[], int size, double* tmp, int iter, int rem) 
@@ -12,10 +12,10 @@ void ParallelSort(double arr[], int size, double* tmp, int iter, int rem)
 
 	l1 = size / 2;
 	l2 = size - l1;
-	ParallelSort(arr, l1, tmp + iter * size + rem, iter, rem);
-	ParallelSort(arr + l1, l2, tmp + iter * size + rem, iter, rem);
-	Merge(arr, l1, arr + l1, l2, tmp + iter * size + rem,0);
-	memcpy(arr, tmp+ iter*size+ rem, size * sizeof(double));
+	ParallelSort(arr, l1, tmp + iter * size, iter, rem);
+	ParallelSort(arr + l1, l2, tmp + iter * size, iter, rem);
+	Merge(arr, l1, arr + l1, l2, tmp + iter * size,0);
+	memcpy(arr, tmp+ iter*size, size * sizeof(double));
 }
 
 void ParallelMerge(double arr[], boost::thread threads[], double* res, int n, int step, int remainder)
@@ -41,57 +41,47 @@ void ParallelMerge(double arr[], boost::thread threads[], double* res, int n, in
 
 }
 
-int main(int argc, char* argv[])
-{
-
-	setlocale(LC_CTYPE, "rus");
-
-	int n; // the size of array
-
-	cout << "Введите размер массива чисел: ";
-	cin >> n;
+// Merge Sort
+void task_1(double arr[], int n, double* res){
+	Sort(arr, n, res);
 
 	
-	double *arr = new double[n];
-	double* arr2 = new double[n];
+	/*for (int i = 0; i < n; i++) {
+		if (n == 1) {
+			cout << arr[0] << ' ';
+			continue;
+		}
+		else cout << res[i] << ' ';
+	}*/
 
-	for (int i = 0; i < n; i++) {
-		arr[i] = rand() % 100;
-		arr2[i] = arr[i];
-		cout << arr[i] << ' ';
-	}
+}
 
-	double *tmp = new double[n];
-	Sort(arr, n, tmp);
-
-	cout << endl;
-	cout << "Последовательная сортировка: "<< endl;
-	for (int i = 0; i < n; i++) {
-		if(n==1) cout << arr[i] << ' ';
-		else cout << tmp[i] << ' ';
-	}
-
-
-	///  parallel
-	double* t = new double[n];
-	double* result = new double[n];
+// Merge Sort with threads
+void task_2(double arr[], int n, double* tmp) {
+	
 
 	if (n < amountOfTthreads) {
-		Sort(arr2, n, t);
-		for (int i = 0; i < n; i++) {
-			cout << t[i] << ' ';
-		}
-		return 0;
+		Sort(arr, n, tmp);
+		/*for (int i = 0; i < n; i++) {
+			if (n == 1) {
+				cout << arr[0] << ' ';
+				continue;
+			}
+
+			else cout << tmp[i] << ' ';
+		}*/
+		return;
 	}
 
 	int step, remainder;
 	step = n / amountOfTthreads;
 	remainder = n % amountOfTthreads;
-
+	//cout << "step = " << step << "   remainder = " << remainder << endl;
 	boost::thread threads[amountOfTthreads];
 
+	double* result = new double[n];
 	if (n == amountOfTthreads) {
-		ParallelMerge(arr2, threads, ref(result), n, step, remainder);
+		ParallelMerge(arr, threads, ref(result), n, step, remainder);
 	}
 	else {
 
@@ -101,36 +91,46 @@ int main(int argc, char* argv[])
 
 			if (i == amountOfTthreads - 1 && remainder != 0) {
 				a = new double[step + remainder];
-				memcpy(a, arr2 + i * step + remainder, (step + remainder) * sizeof(double));
-				threads[i] = boost::thread(ParallelSort, a, step + remainder, ref(t), i, remainder);
-				
+				memcpy(a, arr + i * step, (step + remainder) * sizeof(double));
+				threads[i] = boost::thread(ParallelSort, a, step + remainder, ref(tmp), i, remainder);
+				///cout << "массив эл:\n";
+							/*for (int i = 0; i < step+remainder; i++)
+								cout << a[i] << " ";
+							cout << endl;*/
 
 			}
 			else {
 				a = new double[step];
-				memcpy(a, arr2 + i * step, step * sizeof(double));
-				threads[i] = boost::thread(ParallelSort, a, step, ref(t), i, remainder);
 
+				memcpy(a, arr + i * step, step * sizeof(double));
+
+				/*cout << "массив эл:\n";
+				for (int i = 0; i < step; i++)
+					cout << a[i] << " ";
+				cout << endl;*/
+
+
+
+				threads[i] = boost::thread(ParallelSort, a, step, ref(tmp), i, remainder);
 
 			}
-
-
 		}
 
 
 		for (int i = 0; i < amountOfTthreads; i++)
 			threads[i].join();
+		//cout << "Merging" << endl;
 
-
-		ParallelMerge(t, threads, ref(result), n, step, remainder);
+		ParallelMerge(tmp, threads, ref(result), n, step, remainder);
 	}
+	/*for (int i = 0; i < n; i++)
+		cout << result[i] << ' ';*/
+}
+int main(int argc, char* argv[])
+{
+	setlocale(LC_CTYPE, "rus");
 
-	cout << endl;
-	cout << "Параллельная сортировка: " << endl;
+	test();
 
-	for (int i = 0; i < n; i++) 
-		cout << result[i] << ' ';
-	
-	
 	return 0;
 }
