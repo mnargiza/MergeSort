@@ -1,7 +1,7 @@
 #include "Header.h"
 
 void test() {
-	int numberOfTests = 5; // amounts of tests
+	int numberOfTests = 8; // amounts of tests
 	int k = 5;
 	clock_t start_time, end_time, time;
 
@@ -13,14 +13,14 @@ void test() {
 			arr[j] = rand() % k;
 		}
 		
-		cout << "Êîëè÷åñòâî ÷èñåë: "<<k<<endl;
+		cout << "ÃŠÃ®Ã«Ã¨Ã·Ã¥Ã±Ã²Ã¢Ã® Ã·Ã¨Ã±Ã¥Ã«: "<<k<<endl;
 
 		/*for (int i = 0; i < k; i++) {
 			cout << arr[i] << ' ';
 		}*/
 
 		//cout << endl;
-		//cout << "\nÏîñëåäîâàòåëüíàÿ ñîğòèğîâêà: " << endl;
+		//cout << "\nÃÃ®Ã±Ã«Ã¥Ã¤Ã®Ã¢Ã Ã²Ã¥Ã«Ã¼Ã­Ã Ã¿ Ã±Ã®Ã°Ã²Ã¨Ã°Ã®Ã¢ÃªÃ : " << endl;
 
 		start_time = clock();
 		task_1(arr, k, tmp);
@@ -29,7 +29,7 @@ void test() {
 		cout << "\nTime of sequential sort: " << (double)time/ CLOCKS_PER_SEC << "  \n";
 
 		//cout << endl;
-		//cout << "\nÏàğàëëåëüíàÿ ñîğòèğîâêà: " << endl;
+		//cout << "\nÃÃ Ã°Ã Ã«Ã«Ã¥Ã«Ã¼Ã­Ã Ã¿ Ã±Ã®Ã°Ã²Ã¨Ã°Ã®Ã¢ÃªÃ : " << endl;
 
 		start_time = clock();
 		task_2(arr, k, tmp);
@@ -38,7 +38,7 @@ void test() {
 		cout << "\nTime parallel sort: " << (double)time / CLOCKS_PER_SEC << "  \n";
 		//ParallelSort(arr, k, tmp);
 		//cout << arr[i] << ' ';
-		k = k * 2;
+		k = k * 4;
 	}
 
 
