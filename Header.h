@@ -6,17 +6,21 @@
 #include <math.h>
 #include <time.h>
 #include <utility>
-#include <iomanip>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fstream>
 using namespace std;
 
 
 class barrier {
-    int threadCount;
-    std::atomic<unsigned int>threadsWaiting;
-    bool isNotWaiting;
+    
+    atomic<unsigned int>threadsWaiting;
+    
     std::condition_variable waitVariable;
     std::mutex mutex;
 public:
+    int threadCount;
+    bool isNotWaiting;
     barrier(unsigned int n) : threadCount(n) {
         threadsWaiting = 0;
         isNotWaiting = false;
@@ -33,11 +37,15 @@ public:
             waitVariable.wait(lock, [&] { return isNotWaiting; });
         }
     }
-    void reduce() {
-        threadCount = threadCount - 2;
-    }
+
 };
 
+extern barrier *b1, *b2, *b3, *b4;
+
+
+
+extern int f, f1;
+extern bool _var ;
 void Sort(double arr[], int n, double* tmp);
 void Merge(double arr1[], int n1, double arr2[], int n2, double* arr3, int j);
 
